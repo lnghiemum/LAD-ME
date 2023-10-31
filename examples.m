@@ -7,7 +7,6 @@
 %% Adding paths to current directory
 addpath(genpath("./tools"))
 addpath(genpath("./manopt"))
-addpath(genpath("./SDR_test_rev03092010")); % From 
 clear
 %% Generating data from a single index model
 
@@ -47,17 +46,18 @@ type = "cont";
 % Inverse-moment-based estimators, i.e IL-SIR
 [Gammahat_IL_SIR] = computeSIR(Xhat, y, nslices, type, d);
     
-% IL-LAD estimators (unpenalized)
-Gammahat_IL_LAD = get_lad(Xhat, y, nslices, d , K, options, []);
-
-%% Corrected LAD estimators (unpenalized)
-% Set options for optimization on Grassmann manifold
+%% IL-LAD estimators (unpenalized)
 K = speye(p^2) + Tvectranspose(p, p);
+% Set options for optimization on Grassmann manifold
+
 options = struct();
 options.verbosity = 0;
 options.maxiter = 500;
 options.tolgradnorm = 1e-10; 
 
+Gammahat_IL_LAD = get_lad(Xhat, y, nslices, d , K, options, []);
+
+%% Corrected LAD estimators (unpenalized)
 % unpenalized estimator corresponds to the tuning parameter alpha=0
 [Gammahat_cLAD] = scLAD(W, y, SigmaU, nslices, d, 0, K, options, [], []);
 
